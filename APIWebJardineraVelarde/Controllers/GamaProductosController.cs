@@ -21,7 +21,7 @@ namespace APIWebJardineraVelarde.Controllers
         [HttpGet("Todas las Gamas")]
         public ActionResult<string> BuscarTodas()
         {
-            Respuesta Resultado = new Respuesta();
+            Respuesta resultado = new Respuesta();
             try
             {
                 List<GamaProductosIdViewModel> lista = new List<GamaProductosIdViewModel>();
@@ -33,22 +33,22 @@ namespace APIWebJardineraVelarde.Controllers
 
                 if (lista.Count == 0)
                 {
-                    throw new GamaProductoException("No hay Gamas de productos para mostrar");
+                    throw new Exceptions("No hay Gamas de productos para mostrar");
                 }
-                Resultado.Info = lista;
+                resultado.Info = lista;
             }
-            catch (GamaProductoException ex)
+            catch (Exceptions ex)
             {
-                Resultado.Estado = false;
-                Resultado.Mensaje = ex.Message;
+                resultado.Estado = false;
+                resultado.Mensaje = ex.Message;
             }
             catch (Exception)
             {
-                Resultado.Estado = false;
-                Resultado.Mensaje = "Error consulta al administrador";
+                resultado.Estado = false;
+                resultado.Mensaje = "Error consulta al administrador";
             }
 
-            return Ok(Resultado);
+            return Ok(resultado);
         }
 
         // GET api/<GamaProductoController>/5
@@ -56,30 +56,30 @@ namespace APIWebJardineraVelarde.Controllers
         public ActionResult Buscar(string gama)
         {
             Gama_Productos BuscarGama;
-            Respuesta Resultado = new Respuesta();
+            Respuesta resultado = new Respuesta();
             try
             {
                 BuscarGama = db.gama_producto.Find(gama);
                 if (BuscarGama != null)
                 {
-                    Resultado.Info = new GamaProductosIdViewModel(BuscarGama);
+                    resultado.Info = new GamaProductosIdViewModel(BuscarGama);
                 }
                 else
                 {
-                    throw new GamaProductoException("no gama solicitada");
+                    throw new Exceptions("no gama solicitada");
                 }
             }
-            catch (GamaProductoException ex)
+            catch (Exceptions ex)
             {
-                Resultado.Mensaje = ex.Message;
-                Resultado.Estado = false;
+                resultado.Mensaje = ex.Message;
+                resultado.Estado = false;
             }
             catch (Exception)
             {
-                Resultado.Mensaje = "Error consulta al administrador";
+                resultado.Mensaje = "Error consulta al administrador";
             }
 
-            return Ok(Resultado);
+            return Ok(resultado);
         }
 
         // POST api/<GamaProductoController>
@@ -87,27 +87,27 @@ namespace APIWebJardineraVelarde.Controllers
         public ActionResult Nuevo([FromBody] GamaProductosViewModel g)
         {
             Gama_Productos nueva = new Gama_Productos(g);
-            Respuesta Resultado = new Respuesta();
+            Respuesta resultado = new Respuesta();
             try
             {
 
                 db.gama_producto.Add(nueva);
 
                 db.SaveChanges();
-                Resultado.Info = new GamaProductosIdViewModel(nueva);
+                resultado.Info = new GamaProductosIdViewModel(nueva);
             }
             catch (Exception)
             {
-                Resultado.Mensaje = "Error en el sistma consultar DBA";
+                resultado.Mensaje = "Error en el sistma consultar DBA";
             }
-            return Ok(Resultado);
+            return Ok(resultado);
         }
 
         // PUT api/<GamaProductoController>/5
         [HttpPut("Actualizar/{id}")]
         public ActionResult Put(string gama, [FromBody] Gama_Productos g)
         {
-            Respuesta Resultado = new Respuesta();
+            Respuesta resultado = new Respuesta();
             try
             {
                 Gama_Productos BuscarGama = db.gama_producto.Find(gama);
@@ -118,31 +118,31 @@ namespace APIWebJardineraVelarde.Controllers
                     BuscarGama.descripcion_html = g.descripcion_html;
                     BuscarGama.imagen = g.imagen;
                     db.SaveChanges();
-                    Resultado.Info = new GamaProductosIdViewModel(BuscarGama);
+                    resultado.Info = new GamaProductosIdViewModel(BuscarGama);
                 }
                 else
                 {
                     throw new Exception("La categoria no fue encontrada");
                 }
             }
-            catch (GamaProductoException ex)
+            catch (Exceptions ex)
             {
-                Resultado.Mensaje = ex.Message;
-                Resultado.Estado = false;
+                resultado.Mensaje = ex.Message;
+                resultado.Estado = false;
             }
             catch (Exception)
             {
-                Resultado.Mensaje = "Error en el sistema consulta DBA";
+                resultado.Mensaje = "Error en el sistema consulta DBA";
             }
 
-            return Ok(Resultado);
+            return Ok(resultado);
         }
 
         // DELETE api/<GamaProductoController>/5
         [HttpDelete("Eliminar/{id}")]
         public ActionResult Delete(string gama)
         {
-            Respuesta Resultado = new Respuesta();
+            Respuesta resultado = new Respuesta();
             Gama_Productos BuscarGama = db.gama_producto.Find(gama);
             try
             {
@@ -150,7 +150,7 @@ namespace APIWebJardineraVelarde.Controllers
                 {
                     db.gama_producto.Remove(BuscarGama);
                     db.SaveChanges();
-                    Resultado.Info = (new GamaProductosIdViewModel(BuscarGama));
+                    resultado.Info = (new GamaProductosIdViewModel(BuscarGama));
                 }
                 else
                 {
@@ -159,9 +159,9 @@ namespace APIWebJardineraVelarde.Controllers
             }
             catch (Exception)
             {
-                Resultado.Mensaje = "error en el sistema";
+                resultado.Mensaje = "error en el sistema";
             }
-            return Ok(Resultado);
+            return Ok(resultado);
         }
     }
 }

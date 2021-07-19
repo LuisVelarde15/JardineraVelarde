@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace APIWebJardineraVelarde.Helpers
 {
-    public class GamaProductoException :  Exception
+    public class Exceptions :  Exception
     {
-        public GamaProductoException(string Mensaje) : base(Mensaje)
+        public Exceptions(string Mensaje) : base(Mensaje)
         {
 
         }

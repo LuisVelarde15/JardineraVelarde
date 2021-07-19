@@ -22,7 +22,7 @@ namespace APIWebJardineraVelarde.Controllers
         [HttpGet("Todas las Oficinas")]
         public ActionResult<string> BuscarTodas()
         {
-            Respuesta Resultado = new Respuesta();
+            Respuesta resultado = new Respuesta();
             try
             {
                 List<OficinasIdViewModel> lista = new List<OficinasIdViewModel>();
@@ -34,22 +34,22 @@ namespace APIWebJardineraVelarde.Controllers
 
                 if (lista.Count == 0)
                 {
-                    throw new OficinaException("No hay Oficinas de productos para mostrar");
+                    throw new Exceptions("No hay Oficinas de productos para mostrar");
                 }
-                Resultado.Info = lista;
+                resultado.Info = lista;
             }
-            catch (OficinaException ex)
+            catch (Exceptions ex)
             {
-                Resultado.Estado = false;
-                Resultado.Mensaje = ex.Message;
+                resultado.Estado = false;
+                resultado.Mensaje = ex.Message;
             }
             catch (Exception)
             {
-                Resultado.Estado = false;
-                Resultado.Mensaje = "Error consulta al administrador";
+                resultado.Estado = false;
+                resultado.Mensaje = "Error consulta al administrador";
             }
 
-            return Ok(Resultado);
+            return Ok(resultado);
         }
 
         // GET api/<OficinasController>/5
@@ -57,30 +57,30 @@ namespace APIWebJardineraVelarde.Controllers
         public ActionResult Buscar(string codigo_oficina)
         {
             Oficinas BuscarOficina;
-            Respuesta Resultado = new Respuesta();
+            Respuesta resultado = new Respuesta();
             try
             {
                 BuscarOficina = db.Oficina.Find(codigo_oficina);
                 if (BuscarOficina != null)
                 {
-                    Resultado.Info = new OficinasIdViewModel(BuscarOficina);
+                    resultado.Info = new OficinasIdViewModel(BuscarOficina);
                 }
                 else
                 {
-                    throw new OficinaException("No se econtro la Oficina solicitada");
+                    throw new Exceptions("No se econtro la Oficina solicitada");
                 }
             }
-            catch (OficinaException ex)
+            catch (Exceptions ex)
             {
-                Resultado.Mensaje = ex.Message;
-                Resultado.Estado = false;
+                resultado.Mensaje = ex.Message;
+                resultado.Estado = false;
             }
             catch (Exception)
             {
-                Resultado.Mensaje = "Error consulta al administrador";
+                resultado.Mensaje = "Error consulta al administrador";
             }
 
-            return Ok(Resultado);
+            return Ok(resultado);
         }
 
         // POST api/<OficinasController>
@@ -88,25 +88,25 @@ namespace APIWebJardineraVelarde.Controllers
         public ActionResult Nuevo([FromBody] OficinasViewModel o)
         {
             Oficinas nueva = new Oficinas(o);
-            Respuesta Resultado = new Respuesta();
+            Respuesta resultado = new Respuesta();
             try
             {
                 db.Oficina.Add(nueva);
                 db.SaveChanges();
-                Resultado.Info = new OficinasIdViewModel(nueva);
+                resultado.Info = new OficinasIdViewModel(nueva);
             }
             catch (Exception)
             {
-                Resultado.Mensaje = "Error en el sistma consultar al Admnistrador";
+                resultado.Mensaje = "Error en el sistma consultar al Admnistrador";
             }
-            return Ok(Resultado);
+            return Ok(resultado);
         }
 
         // PUT api/<OficinasController>/5
         [HttpPut("Actualizar Oficina")]
         public ActionResult Put(string Codigo_Oficina, [FromBody] Oficinas o)
         {
-            Respuesta Resultado = new Respuesta();
+            Respuesta resultado = new Respuesta();
             try
             {
                 Oficinas BuscarOficina = db.Oficina.Find(Codigo_Oficina);
@@ -122,31 +122,31 @@ namespace APIWebJardineraVelarde.Controllers
                     BuscarOficina.Linea_Direccion2 = o.Linea_Direccion2;
 
                     db.SaveChanges();
-                    Resultado.Info = new OficinasIdViewModel(BuscarOficina);
+                    resultado.Info = new OficinasIdViewModel(BuscarOficina);
                 }
                 else
                 {
                     throw new Exception("La Oficina no fue encontrada");
                 }
             }
-            catch (OficinaException ex)
+            catch (Exceptions ex)
             {
-                Resultado.Mensaje = ex.Message;
-                Resultado.Estado = false;
+                resultado.Mensaje = ex.Message;
+                resultado.Estado = false;
             }
             catch (Exception)
             {
-                Resultado.Mensaje = "Error en el sistema consulta DBA";
+                resultado.Mensaje = "Error en el sistema consulta DBA";
             }
 
-            return Ok(Resultado);
+            return Ok(resultado);
         }
 
         // DELETE api/<OficinasController>/5
         [HttpDelete("Borrar Oficina")]
         public ActionResult Delete(string Codigo_Oficina)
         {
-            Respuesta Resultado = new Respuesta();
+            Respuesta resultado = new Respuesta();
             Oficinas BuscarOficina= db.Oficina.Find(Codigo_Oficina);
             try
             {
@@ -154,7 +154,7 @@ namespace APIWebJardineraVelarde.Controllers
                 {
                     db.Oficina.Remove(BuscarOficina);
                     db.SaveChanges();
-                    Resultado.Info = (new OficinasIdViewModel(BuscarOficina));
+                    resultado.Info = (new OficinasIdViewModel(BuscarOficina));
                 }
                 else
                 {
@@ -163,9 +163,9 @@ namespace APIWebJardineraVelarde.Controllers
             }
             catch (Exception)
             {
-                Resultado.Mensaje = "error en el sistema";
+                resultado.Mensaje = "error en el sistema";
             }
-            return Ok(Resultado);
+            return Ok(resultado);
         }
     }
 }
