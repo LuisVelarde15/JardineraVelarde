@@ -18,7 +18,7 @@ namespace APIWebJardineraVelarde.Controllers
         Respuesta resultado = new Respuesta();
 
         // GET: api/<GamaProductosController>
-        [HttpGet("Todas las Gamas")]
+        [HttpGet("Todas_las_Gamas")]
         public ActionResult<string> BuscarTodas()
         {
             Respuesta resultado = new Respuesta();

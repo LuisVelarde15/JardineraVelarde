@@ -10,15 +10,15 @@ namespace APIWebJardineraVelarde.ViewModels
     public class ProductosViewModel
     {
 
-        //[Key]
+        [Key]
         public string codigo_producto { get; set; }
-        //[ForeignKey("gama_producto")]
+        [ForeignKey("gama_producto")]
         public string gama { get; set; }
         public string nombre { get; set; }
         public string dimensiones { get; set; }
         public string proveedor { get; set; }
         public string descripcion { get; set; }
-        public int cantidad_en_stock { get; set; }
+        public Int16 cantidad_en_stock { get; set; }
         public int precio_venta { get; set; }
         public int precio_provedor { get; set; }
 
