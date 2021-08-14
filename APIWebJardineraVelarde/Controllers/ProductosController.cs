@@ -169,9 +169,7 @@ namespace APIWebJardineraVelarde.Controllers
 
                 }
                 else
-                    throw new Exception("El producto no fue encontrado para inactivar");
-
-
+                    throw new Exception("El producto no fue encontrado");
             }
             catch (Exceptions ex)
             {
