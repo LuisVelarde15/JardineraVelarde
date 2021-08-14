@@ -1,0 +1,248 @@
+﻿@{
+    ViewData["Title"] = "Empleados";
+}
+<h1>Categorías </h1>
+
+
+<div id="app">
+
+    <!-- Lista de Empleados-->
+    <div id="cargando">
+        <img src="https://i.pinimg.com/originals/4e/b6/97/4eb697b60cf8d2ac12de99e12a444362.gif" />
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            <button class="btn btn-primary" v-on:click="mostrarNuevoEmpleado">
+                Agregar nuevo Empleado
+            </button>
+        </div>
+
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>codigo_Empleado</th>
+                <th>Nombre</th>
+                <th>Apellido1</th>
+                <th>Apellido2</th>
+                <th>Extencion</th>
+                <th>Email</th>
+                <th>Codigo_Oficina</th>
+                <th>Codigo_jefe</th>
+                <th>puesto</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(item, index) in Empleado">
+                <td> {{index + 1}}</td>
+                <td> {{item.nombre}}</td>
+                <td> {{item.apellido1}}</td>
+                <td> {{item.apellido2}}</td>
+                <td> {{item.extencion}}</td>
+                <td> {{item.codigo_oficina}}</td>
+                <td> {{item.codigo_jefe}}</td>
+                <td> {{item.puesto}}</td>
+                <td>
+                    <span>
+                        <button class="btn btn-danger btn-sm" v-on:click="Inactivar(item)">
+                            Inactivar
+                        </button>
+                    </span>
+
+                    <span>
+                        <button class="btn btn-success btn-sm" v-on:click="Activar(item)">
+                            Activar
+                        </button>
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-sm" v-on:click="mostrarEditarEmpleado(item)">
+                        Editar
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <!--Nueva Categoria -->
+    <div class="modal" id="NuevoEmpleadoModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar nuevo Empleado</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input v-model="nombre" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Apellido Paterno</label>
+                        <input v-model="apellido1" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Apellido Materno</label>
+                        <input v-model="apellido2" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Extención</label>
+                        <input v-model="extencion" type="text" class="form-control" style="width:100%" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" v-on:click="guardarNuevoEmpleado">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!--Editar Empleado -->
+    <div class="modal" id="MostrarEditarEmpleadoModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Empleado</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input v-model="nombre" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido1">Apellido paterno</label>
+                        <input v-model="descripcion" type="text" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido2">Apellido materno</label>
+                        <input v-model="descripcion" type="text" class="form-control" style="width:100%" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" v-on:click="guardarEditarEmpleado">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    @section Scripts{
+
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    empleado: [],
+                    codigo_empleado: null,
+                    nombre: "",
+                    Apellido1: "",
+                    Apellido2: "",
+                    activo: null,
+                    index: null
+                },
+                created: function () {
+                    this.BuscarEmpleado();
+                },
+                methods: {
+                    BuscarEmpleado: function () {
+                        var vm = this;
+                        $.ajax({
+                            url: "https://apijardineravelarde.azurewebsites.net/api/MostrarEmpleados",
+                            method: "GET",
+                            dataType: 'JSON'
+                        })
+                            .done(function (resultado) {
+                                if (resultado.estado == true) {
+                                    vm.empleado = resultado.info.$values;
+                                    toastr.success("Datos cargados satisfactoriamente");
+                                }
+                                else
+                                    toastr.error(resultado.mensaje);
+                                $("#cargando").hide();
+                            });
+                    },
+                    mostrarNuevoEmpleado: function () {
+                        this.codigo_empleado = "";
+                        this.nombre = "";
+                        this.apellido1 = "";
+                        this.apellido2 = "";
+                        $("#NuevoEmpleadoModal").modal('show');
+                    },
+                    guardarNuevoEmpleado: function () {
+                        var vm = this;
+                        var nuevoEmpleado = {
+                            codigo_empleado: vm.codigo_empleado,
+                            nombre: vm.nombre,
+                            apellido1: vm.apellido1,
+                            apellido2: vm.apellido2
+                        }
+                        $.ajax({
+                            url: "https://apijardineravelarde.azurewebsites.net/api/Nuevo",
+                            data: JSON.stringify(nuevoEmpleado),
+                            method: "POST",
+                            contentType: 'application/json',
+                            dataType: 'JSON'
+                        })
+                            .done(function (resultado) {
+                                if (resultado.estado == true) {
+                                    toastr.success("Empelado guardado satisfactoriamente");
+                                    $("#NuevoEmpleadoModal").modal('hide');
+                                    vm.obtenerEmpleado();
+                                }
+                                else
+                                    toastr.error(resultado.mensaje);
+                            });
+                    },
+                    mostrarEditarEmpleado: function (item) {
+                        this.codigo_empleado = item.codigo_empleado;
+                        this.nombre = item.nombre;
+                        this.apellido1 = item.apellido1;
+                        $("#MostrarEditarEmpleadoModal").modal('show');
+                    },
+
+                    guardarEditarEmpleado: function () {
+                        var vm = this;
+                        var modificaEmpleado = {
+                            codigo_empleado: vm.codigo_empleado,
+                            nombre: vm.nombre,
+                            apellido1: vm.apellido1,
+                            apellido2: vm.apellido2
+                        }
+                        $.ajax({
+                            url: "https://apijardineravelarde.azurewebsites.net/api/Actualizar" + vm.id,
+                            data: JSON.stringify(modificaEmpleado),
+                            method: "PUT",
+                            contentType: 'application/json',
+                            dataType: 'JSON'
+                        })
+                            .done(function (resultado) {
+                                if (resultado.estado == true) {
+                                    toastr.success("Empleado actualizado satisfactoriamente");
+                                    $("#MostrarEditarEmpleadoModal").modal('hide');
+                                    vm.obtenerCategorias();
+                                }
+                                else
+                                    toastr.error(resultado.mensaje);
+                            });
+                    }
+                }
+            });</script>
+    }
+</div>
