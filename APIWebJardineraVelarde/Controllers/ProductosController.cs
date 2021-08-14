@@ -48,7 +48,6 @@ namespace APIWebJardineraVelarde.Controllers
 
         }
 
-
         // GET api/Producto/Buscar
         [HttpGet("Buscar/{id}")]
         public ActionResult Buscar(string id)
@@ -76,7 +75,6 @@ namespace APIWebJardineraVelarde.Controllers
             return Ok(Resultado);
 
         }
-
 
         // POST api/Gama/Nueva
         [HttpPost("Nuevo")]
@@ -112,7 +110,6 @@ namespace APIWebJardineraVelarde.Controllers
 
             return Ok(Resultado);
         }
-
 
         // PUT api/Actualizar/id
         [HttpPut("Actualizar/{id}")]
@@ -152,11 +149,10 @@ namespace APIWebJardineraVelarde.Controllers
             return Ok(Resultado);
         }
 
-        // DELETE api/Inactivar/id
-        [HttpDelete("Inactivar/{id}")]
-        public ActionResult Inactivar(string id)
+        // DELETE api/Eliminar/id
+        [HttpDelete("Eliminar/{id}")]
+        public ActionResult Eliminar(string id)
         {
-
             try
             {
                 Producto BuscarProducto = db.producto.Find(id);
@@ -180,7 +176,6 @@ namespace APIWebJardineraVelarde.Controllers
             {
                 Resultado.Mensaje = "Error en el Sistema, consulta al admin";
             }
-
             return Ok(Resultado);
 
         }

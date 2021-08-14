@@ -152,7 +152,6 @@ namespace APIWebJardineraVelarde.Controllers
         [HttpDelete("Eliminar/{id}")]
         public ActionResult Eliminar(int id)
         {
-
             try
             {
                 Empleado BuscarEmpleado = db.Empleado.Find(id);
@@ -165,7 +164,7 @@ namespace APIWebJardineraVelarde.Controllers
 
                 }
                 else
-                    throw new Exception("El Empleado no fue encontrado para inactivar");
+                    throw new Exception("El Empleado no fue encontrado");
             }
             catch (Exceptions ex)
             {
