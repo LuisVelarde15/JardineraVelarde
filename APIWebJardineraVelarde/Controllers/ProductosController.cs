@@ -15,66 +15,176 @@ namespace APIWebJardineraVelarde.Controllers
     [ApiController]
     public class ProductosController : ControllerBase
     {
-        Datos db = new Datos();//Conexion a la BD global a la base de datos para todos los metodos
-        Respuesta resultado = new Respuesta();
+        Datos db = new Datos();
+        Respuesta Resultado = new Respuesta();
 
-        // GET: api/<ProductosController>
-        [HttpGet("Mostrar_todos_los_productos")]
-        public ActionResult<string> BuscarTodos()
+        // GET: api/Productos/Todos
+        [HttpGet("(Todos)")]
+        public ActionResult Todos()
         {
-            Respuesta resultado = new Respuesta();
+            Datos db = new Datos();
+            Respuesta Resultado = new Respuesta();
+
+            var prod = db.producto;
+
+            var lista = prod.Select(p => new ProductosViewModel
+            {
+                codigo_producto = p.codigo_producto,
+                nombre = p.nombre,
+                dimensiones = p.dimensiones,
+                proveedor = p.proveedor,
+                descripcion = p.descripcion,
+                cantidad_en_stock = p.cantidad_en_stock,
+                precio_venta = p.precio_venta,
+                precio_proveedor = p.precio_proveedor,
+                gama = p.gama
+            }
+            );
+
+
+            Resultado.Info = lista;
+
+            return Ok(Resultado);
+
+        }
+
+
+        // GET api/Producto/Buscar
+        [HttpGet("Buscar/{id}")]
+        public ActionResult Buscar(string id)
+        {
+
+            Producto BuscarProducto;
             try
             {
-                List<ProductosIdViewModel> lista = new List<ProductosIdViewModel>();
-
-                foreach (Producto p in db.Producto)
-                {
-                    lista.Add(new ProductosIdViewModel(p));
-                }
-
-                if (lista.Count == 0)
-                {
-                    throw new Exceptions("No hay Productos para mostrar");
-                }
-                resultado.Info = lista;
+                BuscarProducto = db.producto.Find(id);
+                if (BuscarProducto != null)
+                    Resultado.Info = new ProductosViewModel(BuscarProducto);
+                else
+                    throw new Exception("Producto no encontrado");
             }
             catch (Exceptions ex)
             {
-                resultado.Estado = false;
-                resultado.Mensaje = ex.Message;
+                Resultado.Mensaje = ex.Message;
+                Resultado.Estado = false;
             }
             catch (Exception)
             {
-                resultado.Estado = false;
-                resultado.Mensaje = "Error consulta al administrador";
+                Resultado.Mensaje = "Error en el Sistema, consulta al admin";
             }
 
-            return Ok(resultado);
+            return Ok(Resultado);
+
         }
 
-        // GET api/<ProductosController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+
+        // POST api/Gama/Nueva
+        [HttpPost("Nuevo")]
+        public ActionResult Nuevo([FromBody] ProductosViewModel p)
         {
-            return "value";
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Producto nuevo = new Producto(p);
+                    db.producto.Add(nuevo);
+                    db.SaveChanges();
+                    Resultado.Info = new ProductosViewModel(nuevo);
+                }
+                else
+                {
+                    Resultado.Estado = false;
+                    string MensajeError = "";
+
+                    foreach (var valor in ModelState.Values)
+                    {
+                        MensajeError += valor.Errors[0].ErrorMessage;
+                        MensajeError += " | ";
+                    }
+                    Resultado.Mensaje = MensajeError; ;
+                }
+            }
+
+            catch (Exception)
+            {
+                Resultado.Mensaje = "Error en el Sistema, consulta al admin";
+            }
+
+            return Ok(Resultado);
         }
 
-        // POST api/<ProductosController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+
+        // PUT api/Actualizar/id
+        [HttpPut("Actualizar/{id}")]
+        public ActionResult Actualizar(string id, [FromBody] ProductosViewModel g)
         {
+
+            try
+            {
+                Producto BuscarProducto = db.producto.Find(id);
+
+                if (BuscarProducto != null)
+                {
+                    BuscarProducto.nombre = g.nombre;
+                    BuscarProducto.gama = g.gama;
+                    BuscarProducto.dimensiones = g.dimensiones;
+                    BuscarProducto.proveedor = g.proveedor;
+                    BuscarProducto.descripcion = g.descripcion;
+                    BuscarProducto.cantidad_en_stock = g.cantidad_en_stock;
+                    BuscarProducto.precio_venta = g.precio_venta;
+                    BuscarProducto.precio_proveedor = g.precio_proveedor;
+                    db.SaveChanges();
+                    Resultado.Info = new ProductosViewModel(BuscarProducto);
+
+                }
+                else
+                    throw new Exception("Producto no encontrado");
+            }
+            catch (Exceptions ex)
+            {
+                Resultado.Mensaje = ex.Message;
+                Resultado.Estado = false;
+            }
+            catch (Exception)
+            {
+                Resultado.Mensaje = "Error en el Sistema, consulta al admin";
+            }
+            return Ok(Resultado);
         }
 
-        // PUT api/<ProductosController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // DELETE api/Inactivar/id
+        [HttpDelete("Inactivar/{id}")]
+        public ActionResult Inactivar(string id)
         {
-        }
 
-        // DELETE api/<ProductosController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            try
+            {
+                Producto BuscarProducto = db.producto.Find(id);
+                if (BuscarProducto != null)
+                {
+                    db.producto.Remove(BuscarProducto);
+                    db.SaveChanges();
+                    Resultado.Info = new
+                            ProductosViewModel(BuscarProducto);
+
+                }
+                else
+                    throw new Exception("El producto no fue encontrado para inactivar");
+
+
+            }
+            catch (Exceptions ex)
+            {
+                Resultado.Mensaje = ex.Message;
+                Resultado.Estado = false;
+            }
+            catch (Exception)
+            {
+                Resultado.Mensaje = "Error en el Sistema, consulta al admin";
+            }
+
+            return Ok(Resultado);
+
         }
     }
 }

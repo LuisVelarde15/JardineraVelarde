@@ -12,7 +12,7 @@ namespace APIWebJardineraVelarde.Helpers
         public DbSet<Gama_Productos> gama_producto { get; set; } //Tabla Gama Productos de la base de datos
         public DbSet<Oficinas> Oficina { get; set; } //Tabla Oficinas de la base de datos
         public DbSet<Empleado> Empleado { get; set; } //Tabla categorias de la base de datos
-        public DbSet<Producto> Producto { get; set; } //Tabla Productos de la base de datos
+        public DbSet<Producto> producto { get; set; } //Tabla Productos de la base de datos
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
