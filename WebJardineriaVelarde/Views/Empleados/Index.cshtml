@@ -1,8 +1,7 @@
 ﻿@{
-    ViewData["Title"] = "Empleados";
+    ViewData["Title"] = "Empleado";
 }
-<h1>Categorías </h1>
-
+<h1>Empleado</h1>
 
 <div id="app">
 
@@ -68,7 +67,7 @@
     </table>
 
 
-    <!--Nueva Categoria -->
+    <!--Nuevo Empleado -->
     <div class="modal" id="NuevoEmpleadoModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -236,7 +235,7 @@
                                 if (resultado.estado == true) {
                                     toastr.success("Empleado actualizado satisfactoriamente");
                                     $("#MostrarEditarEmpleadoModal").modal('hide');
-                                    vm.obtenerCategorias();
+                                    vm.obtenerEmpleado();
                                 }
                                 else
                                     toastr.error(resultado.mensaje);
